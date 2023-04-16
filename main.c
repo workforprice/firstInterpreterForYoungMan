@@ -11,14 +11,14 @@ int main(int argc, const char* argv[]) {
     printf("hello chk\n");
     initChunk(&chunk);
     int constant = addConstants(&chunk, 33.33);
-    writeChunk(&chunk, OP_CONSTANT);
-    writeChunk(&chunk, constant);
+    writeChunk(&chunk, OP_CONSTANT, 123);
+    writeChunk(&chunk, constant, 123);
 
-    int constant2 = addConstants(&chunk, 33.33);
-    writeChunk(&chunk, OP_CONSTANT);
-    writeChunk(&chunk, constant2);
+    int constant2 = addConstants(&chunk, 123);
+    writeChunk(&chunk, OP_CONSTANT, 123);
+    writeChunk(&chunk, constant2, 123);
 
-    writeChunk(&chunk, OP_RETURN);
+    writeChunk(&chunk, OP_RETURN, 222);
 
     
     disassembleChunk(&chunk, "test chunk");

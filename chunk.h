@@ -3,6 +3,8 @@
 
 #include "common.h"
 #include "value.h"
+#include "RLE.h"
+
 #include <stdint.h>
 typedef enum {
     OP_CONSTANT,
@@ -18,6 +20,9 @@ typedef struct {
     // data along with instructions
     // opcodes
     uint8_t* code; 
+    // line info, source line compiled from
+    // same index with code
+    Rle lines;
     // constants
     // constant values
     ValueArray constants;
@@ -26,6 +31,6 @@ typedef struct {
 void initChunk(Chunk* chunk);
 
 void freeChunk(Chunk* chunk);
-void writeChunk(Chunk* chunk, uint8_t byte);
+void writeChunk(Chunk* chunk, uint8_t byte, int line);
 int addConstants(Chunk* chunk, Value value);
 #endif
