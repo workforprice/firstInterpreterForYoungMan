@@ -40,6 +40,7 @@ int dissasembleInstruction(Chunk* chunk, int offset) {
   printf("%04d ", offset);
 
   // source line
+  // decode line info
   if (offset > 0 && chunk->lines[offset] == chunk->lines[offset-1]) {
     printf("   | ");
   } else {

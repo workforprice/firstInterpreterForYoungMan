@@ -19,16 +19,11 @@ void writeChunk(Chunk* chunk, uint8_t byte, int line) {
         chunk->capacity = GROW_CAPACITY(oldCapacity);
         chunk->code = GROW_ARRAY(uint8_t, chunk->code,
             oldCapacity, chunk->capacity);
-        writeRle(&chunk->lines, line);
-        chunk->lines = GROW_ARRAY(int, chunk->lines,
-            oldCapacity, chunk->capacity);
-
     }
 
     // already has capacity
     chunk->code[chunk->count] = byte;
-    chunk->lines[chunk->count] = line;
-
+    writeRle(&chunk->lines, line);
     chunk->count ++;
 }
 
