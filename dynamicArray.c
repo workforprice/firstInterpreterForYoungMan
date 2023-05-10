@@ -17,6 +17,7 @@ void writeDynamicArray(DynamicArray* array, int value) {
 
   // write value
   array->values[array->count] = value;
+  array->count ++;
 }
 
 void freeDynamicArray(DynamicArray* array) {

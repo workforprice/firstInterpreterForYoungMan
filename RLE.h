@@ -17,4 +17,6 @@ typedef struct {
 void initRle(Rle* rle);
 void freeRle(Rle* rle);
 void writeRle(Rle* rle, int line);
+int getLine(Rle* rle, int offset);
+
 #endif

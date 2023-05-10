@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
+#include "RLE.h"
 #include "chunk.h"
 #include "debug.h"
 
@@ -41,10 +42,10 @@ int dissasembleInstruction(Chunk* chunk, int offset) {
 
   // source line
   // decode line info
-  if (offset > 0 && chunk->lines[offset] == chunk->lines[offset-1]) {
+  if (offset > 0 && getLine(&chunk->lines, offset) == getLine(&chunk->lines, offset - 1)) {
     printf("   | ");
   } else {
-    printf("%4d ", chunk->lines[offset]);
+    printf("%4d ", getLine(&chunk->lines, offset));
   }
 
   uint8_t instruction = chunk->code[offset];
