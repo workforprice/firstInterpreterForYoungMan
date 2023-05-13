@@ -11,18 +11,17 @@ int main(int argc, const char *argv[]) {
   printf("hello chk\n");
   initChunk(&chunk);
 
-  int constant = addConstants(&chunk, 1.2);
-  writeChunk(&chunk, OP_CONSTANT, 123);
-  writeChunk(&chunk, constant, 123);
+  for (int i = 0; i < 256; i++) {
+    writeChunk(&chunk, OP_CONSTANT, i);
+    writeConstant(&chunk, i + i, i);
+  }
+  
+  writeChunk(&chunk, OP_CONSTANT_LONG, 256);
+  writeConstant(&chunk, 999, 256);
+  
 
-  writeChunk(&chunk, OP_RETURN, 123);
-  writeChunk(&chunk, OP_CONSTANT, 125);
-  int constant2 = addConstants(&chunk, 33);
-  writeChunk(&chunk, constant2, 125);
   disassembleChunk(&chunk, "test chunk");   
-
   freeChunk(&chunk);
-
   printf("bye chk\n");
   return 0;
 }

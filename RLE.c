@@ -12,25 +12,18 @@ void freeRle(Rle *rle) {
 }
 
 void writeRle(Rle *rle, int line) {
-  // line diffrent from the pre.
   if (rle->lines.count == 0 ||
-      line != rle->lines.values[rle->lines.count - 1]) {
+      // (rle->lines.count == 1 &&
+      rle->lines.values[rle->lines.count - 1] != line)
     writeDynamicArray(&rle->lines, line);
-  } else if ((rle->lines.count > 1 &&
-             rle->lines.values[rle->lines.count - 1] !=
-                 rle->lines.values[rle->lines.count - 2])
-          || (rle->lines.count = 1 && rle->lines.values[0] == line)) {
-    // lines info mentainans - escape code
-    // don't have escape code.
-    // show times 1 -> 2
-    // escape code - dup the line info
-    // and write how many times the line shows up.
+  else if (rle->lines.count > 1 &&
+           rle->lines.values[rle->lines.count - 1] ==
+               rle->lines.values[rle->lines.count - 2] &&
+           line == rle->lines.values[rle->lines.count - 1]) {
+    rle->times.values[rle->times.count - 1]++;
+  } else {
     writeDynamicArray(&rle->lines, line);
     writeDynamicArray(&rle->times, 2);
-  } else {
-    // same as pre
-    // or correct the show tiems of line in escape code
-    rle->times.values[rle->times.count - 1]++;
   }
 }
 
