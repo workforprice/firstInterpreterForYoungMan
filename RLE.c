@@ -35,16 +35,11 @@ int getLine(Rle *rle, int offset) {
   int count = 0;
 
   for (; linesIter < rle->lines.count; linesIter++) {
-    if (linesIter > 0) {
-      if (rle->lines.values[linesIter] != rle->lines.values[linesIter - 1]) {
-        // diff the pre
-        count += 1;
-      } else {
+    if (linesIter > 0 && rle->lines.values[linesIter] == rle->lines.values[linesIter - 1]) {
         // same as pre
-        count += rle->times.values[timesIter];
+        count += rle->times.values[timesIter] - 1;
         timesIter++;
-      }
-
+        // linesIter ++;
     } else {
       count += 1;
     }

@@ -50,12 +50,13 @@ int dissasembleInstruction(Chunk* chunk, int offset) {
 
   // source line
   // decode line info
-  // if (offset > 0 && getLine(&chunk->lines, offset) == getLine(&chunk->lines, offset - 1)) {
-  //   printf("   | ");
-  // } else {
-  //   printf("%4d ", getLine(&chunk->lines, offset));
-  // }
+  if (offset > 0 && getLine(&chunk->lines, offset) == getLine(&chunk->lines, offset - 1)) {
+    printf("   | ");
+  } else {
     printf("%4d ", getLine(&chunk->lines, offset));
+  }
+    // printf("%4d ", getLine(&chunk->lines, offset));
+  // printf("%4d ", offset);
 
   uint8_t instruction = chunk->code[offset];
   switch (instruction) {
