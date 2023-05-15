@@ -34,19 +34,15 @@ int getLine(Rle *rle, int offset) {
   int timesIter = 0;
   int count = 0;
 
-  for (; linesIter < rle->lines.count; linesIter++) {
+  while (linesIter < rle->lines.count && offset > count) {
     if (linesIter > 0 && rle->lines.values[linesIter] == rle->lines.values[linesIter - 1]) {
         // same as pre
         count += rle->times.values[timesIter] - 1;
         timesIter++;
-        // linesIter ++;
     } else {
       count += 1;
     }
-
-    if (count > offset) {
-      break;
-    }
+         linesIter ++;
   }
 
   return linesIter < rle->lines.count ? rle->lines.values[linesIter]

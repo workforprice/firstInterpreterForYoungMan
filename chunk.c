@@ -40,7 +40,7 @@ int addConstants(Chunk *chunk, Value value) {
 }
 
 /* writeConstant helper */
-void writeChunkLongHelper (Chunk* chunk, uint8_t byte) {
+void writeChunkLongHelper (Chunk* chunk, uint8_t byte, int line) {
   if (chunk->capacity < chunk->count + 1) {
     int oldCapacity = chunk->capacity;
     chunk->capacity = GROW_CAPACITY(oldCapacity);
@@ -50,13 +50,14 @@ void writeChunkLongHelper (Chunk* chunk, uint8_t byte) {
 
   // already has capacity
   chunk->code[chunk->count] = byte;
+  writeRle(&chunk->lines, line);
   chunk->count++;
 }
 
 void writeChunkLong(Chunk* chunk, uint32_t uint24t, int line) {
     writeChunk(chunk, uint24t % (1 << 8), line);
-    writeChunkLongHelper(chunk, (uint24t >> 8) % (1 << 8));
-    writeChunkLongHelper(chunk, (uint24t >> 16) % (1 << 8));
+    writeChunkLongHelper(chunk, (uint24t >> 8) % (1 << 8), line);
+    writeChunkLongHelper(chunk, (uint24t >> 16) % (1 << 8), line);
 }
 // define a second OP_CONSTANT_LONG instruction.
 // stores the operand as a 24-bit number.
