@@ -27,9 +27,7 @@ void writeRle(Rle *rle, int line) {
   }
 }
 
-// map offset to line.
-// offset is a normal number
-int getLine(Rle *rle, int offset) {
+int lineInfoHelper (Rle* rle, int offset) {
   int linesIter = 0;
   int timesIter = 0;
   int count = 0;
@@ -45,6 +43,24 @@ int getLine(Rle *rle, int offset) {
          linesIter ++;
   }
 
+  return linesIter;
+}
+// map offset to line.
+// offset is a normal number
+int getLine(Rle *rle, int offset) {
+  int linesIter = lineInfoHelper(rle, offset);
   return linesIter < rle->lines.count ? rle->lines.values[linesIter]
-                                      : rle->lines.values[rle->lines.count - 1];
+                                      // : rle->lines.values[rle->lines.count - 1];
+                                      : -1;
+}
+
+bool isSameLine(Rle* rle, int offset){
+  int lineInfoArrayIndex = lineInfoHelper(rle, offset);
+  if (lineInfoArrayIndex > rle->lines.count || lineInfoArrayIndex < 1) {
+    return -1;
+  }
+  else {
+    return (rle->lines.values[lineInfoArrayIndex] == rle->lines.values[lineInfoArrayIndex - 1]) ?
+                  true: false;
+  } 
 }
