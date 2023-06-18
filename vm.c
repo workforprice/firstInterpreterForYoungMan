@@ -1,13 +1,17 @@
-#include "chunk.h"
-#include "common.h"
-#include "value.h"
 #include "vm.h"
+#include "chunk.h"
 #include "debug.h"
+#include "value.h"
 #include <stdio.h>
 
 VM vm; 
 
+static void resetStack() {
+  vm.stackTop = vm.stack;
+}
+
 void initVM() {
+  resetStack();
 }
 
 void freeVM() {
@@ -21,22 +25,39 @@ static InterpretResult run() {
 // #define READ_CONSTANT_LONG() (vm.chunk->constants.values[READ_BYTE() + READ_BYTE() << 8 + READ_BYTE() << 16]  )
 
   for (;;) {
+    #ifdef DEBUG_TRACE_EXECUTION
+      printf("          ");
+      for (Value* slot = vm.stack; slot < vm.stackTop; slot++) {
+        printf("[ ");
+        printfValue(*slot);
+        printf(" ]");
+      }
+      printf("\n");
+      dissasembleInstruction(vm.chunk, (int) (vm.ip - vm.chunk->code));
+    #endif
     uint8_t instruction;
     switch (instruction = READ_BYTE()) { 
+      case OP_NEGATE: {
+        push(- pop());
+        break;
+      }
       case OP_RETURN: {
-        printf("op_return\n");
+        // printf("op_return\n");
+        printfValue(pop());
+        printf("\n");
         return INTERPRET_OK; 
       }
       case OP_CONSTANT: {
         Value constant =  READ_CONSTANT();
-        printfValue(constant);
-        printf("\n");
+        // printfValue(constant);
+        // printf("\n");
+        push(constant);
         break;
       }
       case OP_CONSTANT_LONG: {
         // Value constant = READ_CONSTANT_LONG();
         // printfValue("constant");
-        *vm.ip += 3;
+        vm.ip += 3;
         printf("constant");
         printf("\n");
         break;
@@ -54,4 +75,14 @@ InterpretResult interpret(Chunk* chunk) {
   // not the one currently being handled.
   vm.ip = vm.chunk->code;
   return run();
+}
+
+void push(Value value) {
+  *vm.stack = value;
+  vm.stackTop ++;
+}
+
+Value pop() {
+  vm.stackTop --;
+  return *vm.stackTop;
 }

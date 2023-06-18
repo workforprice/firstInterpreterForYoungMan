@@ -56,8 +56,11 @@ int getLine(Rle *rle, int offset) {
 
 bool isSameLine(Rle* rle, int offset){
   int lineInfoArrayIndex = lineInfoHelper(rle, offset);
-  if (lineInfoArrayIndex > rle->lines.count || lineInfoArrayIndex < 1) {
+  if (lineInfoArrayIndex < 1) {
     return -1;
+  }
+  else if (lineInfoArrayIndex > rle->lines.count) {
+    return true; // 都在最后一行？？？
   }
   else {
     return (rle->lines.values[lineInfoArrayIndex] == rle->lines.values[lineInfoArrayIndex - 1]) ?

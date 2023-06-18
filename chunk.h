@@ -9,6 +9,7 @@
 #include <stdint.h>
 typedef enum {
     OP_CONSTANT,
+    OP_NEGATE,
     OP_RETURN,
     OP_CONSTANT_LONG,
 } OpCode;
