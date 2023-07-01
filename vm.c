@@ -22,6 +22,12 @@ static InterpretResult run() {
 // so the constlong can't just decode like ip++
 #define READ_BYTE() (*vm.ip++)
 #define READ_CONSTANT() (vm.chunk->constants.values[READ_BYTE()])
+#define BINARY_OP(op) \
+  do { \
+    double b = pop(); \
+    double a = pop(); \
+    push(a op b); \
+  }while (false)
 // #define READ_CONSTANT_LONG() (vm.chunk->constants.values[READ_BYTE() + READ_BYTE() << 8 + READ_BYTE() << 16]  )
 
   for (;;) {
@@ -37,10 +43,11 @@ static InterpretResult run() {
     #endif
     uint8_t instruction;
     switch (instruction = READ_BYTE()) { 
-      case OP_NEGATE: {
-        push(- pop());
-        break;
-      }
+      case OP_ADD:      BINARY_OP(+); break;
+      case OP_SUBTRACT: BINARY_OP(-); break;
+      case OP_MULTIPLY: BINARY_OP(*); break;
+      case OP_DIVIDE:   BINARY_OP(/); break;
+      case OP_NEGATE:   push(- pop()); break;
       case OP_RETURN: {
         // printf("op_return\n");
         printfValue(pop());
@@ -49,8 +56,8 @@ static InterpretResult run() {
       }
       case OP_CONSTANT: {
         Value constant =  READ_CONSTANT();
-        // printfValue(constant);
-        // printf("\n");
+        printfValue(constant);
+        printf("\n");
         push(constant);
         break;
       }
@@ -67,6 +74,7 @@ static InterpretResult run() {
   }
 #undef READ_BYTE
 #undef READ_CONSTANT
+#undef BINARY_OP
 }
 
 InterpretResult interpret(Chunk* chunk) {
@@ -78,7 +86,7 @@ InterpretResult interpret(Chunk* chunk) {
 }
 
 void push(Value value) {
-  *vm.stack = value;
+  *vm.stackTop = value;
   vm.stackTop ++;
 }
 

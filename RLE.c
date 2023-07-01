@@ -59,7 +59,7 @@ bool isSameLine(Rle* rle, int offset){
   if (lineInfoArrayIndex < 1) {
     return -1;
   }
-  else if (lineInfoArrayIndex > rle->lines.count) {
+  else if (lineInfoArrayIndex >= rle->lines.count) {
     return true; // 都在最后一行？？？
   }
   else {

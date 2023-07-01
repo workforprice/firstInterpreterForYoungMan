@@ -32,15 +32,30 @@ int main(int argc, const char *argv[]) {
   // writeChunk(&chunk, OP_RETURN, 512);
 
   // test vm.stack
-  int constant = addConstants(&chunk, 1.777);
-  writeChunk(&chunk, OP_CONSTANT, 123);
-  writeChunk(&chunk, constant, 123);
-  writeChunk(&chunk, OP_NEGATE, 123);
-  writeChunk(&chunk, OP_RETURN, 124);
+  // int constant = addConstants(&chunk, 1.777);
+  // writeChunk(&chunk, OP_CONSTANT, 123);
+  // writeChunk(&chunk, constant, 123);
+  // writeChunk(&chunk, OP_NEGATE, 123);
+  // writeChunk(&chunk, OP_RETURN, 124);
+
+  // test binary OPs
+  // int constant = addConstants(&chunk, 1.2);
+  // writeChunk(&chunk, OP_CONSTANT, 123);
+  // writeChunk(&chunk, constant, 123);
+  // constant = addConstants(&chunk, 3.4);
+  // writeChunk(&chunk, OP_CONSTANT, 123);
+  // writeChunk(&chunk, constant, 123);
+  // writeChunk(&chunk, OP_ADD, 123);
+  // constant = addConstants(&chunk, 5.6);
+  // writeChunk(&chunk, OP_CONSTANT, 123);
+  // writeChunk(&chunk, constant, 123);
+  // writeChunk(&chunk, OP_DIVIDE, 123);
+  // writeChunk(&chunk, OP_NEGATE, 123);
+  // writeChunk(&chunk, OP_RETURN, 123);
 
 
   disassembleChunk(&chunk, "test chunk");
-  // interpret(&chunk);
+  interpret(&chunk);
   freeVM();
   freeChunk(&chunk);
   printf("bye chk\n");
