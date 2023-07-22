@@ -181,6 +181,7 @@ static Token identifier() {
   return makeToken(identifierType());
 }
 Token scanToken() {
+  skipWhitespace();
   scanner.start = scanner.current;
 
   if (isAtEnd()) return makeToken(TOKEN_EOF);
@@ -190,7 +191,6 @@ Token scanToken() {
   if (isDigit(c)) {return number();}
 
   switch (c) {
-    skipWhitespace();
   case '(': return makeToken(TOKEN_LEFT_PAREN);
   case ')': return makeToken(TOKEN_RIGHT_PAREN);
   case '{': return makeToken(TOKEN_LEFT_BRACE);
