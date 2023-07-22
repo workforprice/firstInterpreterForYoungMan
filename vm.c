@@ -2,6 +2,7 @@
 #include "chunk.h"
 #include "debug.h"
 #include "value.h"
+#include "compiler.h"
 #include <stdio.h>
 
 VM vm; 
@@ -77,13 +78,18 @@ static InterpretResult run() {
 #undef BINARY_OP
 }
 
-InterpretResult interpret(Chunk* chunk) {
-  vm.chunk = chunk;
-  // the IP always points to the next instruction,
-  // not the one currently being handled.
-  vm.ip = vm.chunk->code;
-  return run();
+InterpretResult interpret(const char* source) {
+  compile(source);
+  return INTERPRET_OK;
 }
+
+// InterpretResult interpret(Chunk* chunk) {
+//   vm.chunk = chunk;
+//   // the IP always points to the next instruction,
+//   // not the one currently being handled.
+//   vm.ip = vm.chunk->code;
+//   return run();
+// }
 
 void push(Value value) {
   *vm.stackTop = value;
