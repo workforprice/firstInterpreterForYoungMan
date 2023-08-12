@@ -1,7 +1,10 @@
 #include "compiler.h"
+#include "chunk.h"
 #include "common.h"
 #include "scanner.h"
+#include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 typedef struct{
   Token current;
@@ -10,7 +13,26 @@ typedef struct{
   bool panicMode; // clear at synchronization point.
 } Parser;
 
+typedef enum {
+  PREC_NONE,
+  PREC_ASSIGNMENT,  // =
+  PREC_OR,          // or
+  PREC_AND,         // and
+  PREC_EQUALITY,    // == !=
+  PREC_COMPARISON,  // < > <= >=
+  PREC_TERM,        // + -
+  PREC_FACTOR,      // * /
+  PREC_UNARY,       // ! -
+  PREC_CALL,        // . ()
+  PREC_PRIMARY
+} Precedence;
+
 Parser parser;
+Chunk* compiliingChunk;
+
+static Chunk* currentChunk() {
+  return compiliingChunk;
+}
 
 static void errorAt(Token* token, const char* message) {
   // suppres any other errors
@@ -57,9 +79,72 @@ static void consume(TokenType type, const char* message) {
 
   errorAtCurrent(message);
 }
+
+static void emitByte(uint8_t byte) {
+  writeChunk(currentChunk(), byte, parser.previous.line);
+}
+static void emitBytes(uint8_t byte1, uint8_t byte2) {
+  emitByte(byte1);
+  emitByte(byte2);
+}
+static void emitReturn() {
+  emitByte(OP_RETURN);
+}
+
+static void endCompiler() {
+  emitReturn();
+}
+
+static uint8_t makeConstant(double value) {
+  int constant = addConstants(currentChunk(), value);
+  
+  // has support more than unit8_max num. with rle :)
+  // if (constant > UINT8_MAX) {
+  //   error("too many constants in one chunk.");
+  //   return 0;
+  // }
+  
+  return (uint8_t)constant;
+}
+static void emitConstant(double value) {
+  emitBytes(OP_CONSTANT, makeConstant(value));
+}
+static void number() {
+  double value = strtod(parser.previous.start, NULL);
+  emitConstant(value);
+}
+
+static void parsePrecedence(Precedence precedence) {
+
+}
+
+static void expression() {
+  parsePrecedence(PREC_ASSIGNMENT);
+}
+
+// parsing the program in the order it appears in the source code
+// rearranging it into the order that execution happens.
+static void unary() {
+  TokenType operatorType = parser.previous.type;
+
+  // Compile the operand.
+  parsePrecedence(PREC_UNARY);
+
+  // Emit operator instruction.
+  switch (operatorType) {
+    case TOKEN_MINUS: emitByte(OP_NEGATE); break;
+    default: return;
+  }
+}
+static void grouping() {
+  expression();
+  consume(TOKEN_RIGHT_PAREN, "Expect ')' after expresion.");
+}
+
 // clox grammer requires only one token of lookahead 
 bool compile(const char *source, Chunk* chunk) {
   initScanner(source);
+  compiliingChunk = chunk;
 
   // temporary code to drive the Scanner.
   // int line = -1;
@@ -86,5 +171,6 @@ bool compile(const char *source, Chunk* chunk) {
   advance();
   expression();
   consume(TOKEN_EOF, "Expect end of expression.");
+  endCompiler(); // wrap compilied things up.
   return !parser.hadError;
 }
