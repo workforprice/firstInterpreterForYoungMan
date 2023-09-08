@@ -31,7 +31,7 @@ static char advance() {
 
 static bool match(char expected) {
   if(isAtEnd()) return false;
-  if(*scanner.current != expected) return true;
+  if(*scanner.current != expected) return false;
   scanner.current++;
   return true;
 }

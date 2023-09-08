@@ -26,6 +26,8 @@ int main(int argc, const char *argv[]) {
 }
 
 static void repl() {
+  // cause acceptable input line should be shorter than 1024
+  // too long arithmatic str would failed.
   char line[1024];
   for (; ; ) {
     printf("> ");
