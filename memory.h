@@ -11,6 +11,12 @@
 #define ALLOCATE(type, count) \
     (type*)reallocate(NULL, 0, sizeof(type) * (count))
 
+#define ALLOCATE_OBJ(type, objectType) \
+  (type*)allocateObject(sizeof(type), objectType)
+
+#define FLEXIBLE_ARRAY_MEM(structType, memberType, length) \
+    (structType*)reallocate(NULL, 0, sizeof(structType) + sizeof(memberType) * (length + 1) )
+
 /**
   * create or grow array after
   * know the desire capacity.
