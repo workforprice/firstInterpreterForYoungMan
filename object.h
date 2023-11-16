@@ -3,6 +3,7 @@
 
 #include "common.h"
 #include "value.h"
+#include <stdint.h>
 
 #define IS_STRING(value) isObjType(value, OBJ_STRING)
 #define OBJ_TYPE(value) (AS_OBJ(value)->type)
@@ -26,6 +27,7 @@ struct ObjString {
   Obj obj;
   int length;
   char* chars;
+  uint32_t hash; // hash code of itself
 };
 
 ObjString* copyString(const char* chars, int length);
